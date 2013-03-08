@@ -70,7 +70,7 @@ public class MarkerDBWorker{
 
         // Get the HandlerThread's Looper and use it for our Handler
         HandlerThread thread = new HandlerThread("PassiveLocationDBMarkerWorker",
-                                           Process.THREAD_PRIORITY_LESS_FAVORABLE);
+                                           Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
         mServiceLooper = thread.getLooper();
@@ -171,20 +171,18 @@ public class MarkerDBWorker{
             StringBuilder sb = new StringBuilder();
             android.support.v4.util.TimeUtils.formatDuration(avgFixInterval, sb);
             String avgFixIntString = "Avg. Fix interval: " + sb.toString();
+            String npTVString = "Total Number of Loc Requests: " + mcurs.getPosition();
+
+            //initialize and send message containing
             Bundle b = new Bundle();
             b.putString(LFnC.WThrdAvgFixIntKey, avgFixIntString);
+            b.putString(LFnC.WThrdNPString, npTVString);
             m = Message.obtain();
-            m.what = MainActivityDBResultHandler.avgFixIntID;
+            m.what = MainActivityDBResultHandler.avgFixAndNumPointsIntID;
             m.setData(b);
             mMessenger.send(m);
 
-            String npTVString = "Total Number of Loc Requests: " + mcurs.getPosition();
-            b = new Bundle();
-            b.putString(LFnC.WThrdNPString, npTVString);
-            m = Message.obtain();
-            m.what = MainActivityDBResultHandler.numPointsID;
-            m.setData(b);
-            mMessenger.send(m);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         } finally {

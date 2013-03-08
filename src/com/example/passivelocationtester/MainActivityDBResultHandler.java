@@ -1,5 +1,7 @@
 package com.example.passivelocationtester;
 
+import java.util.HashMap;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -18,17 +20,18 @@ import android.widget.TextView;
 public class MainActivityDBResultHandler extends Handler {
 
     static final int locInfoID = 1;
-    static final int avgFixIntID = 2;
-    static final int numPointsID = 3;
+    static final int avgFixAndNumPointsIntID = 2;
 
     String TAG = "MainActivityDBResultHandler";
     GoogleMap mMap;
     Activity mActivity;
+    HashMap<String, Float> markerIDToAccuracyHM;
 
 
-    public MainActivityDBResultHandler(GoogleMap map, Activity a) {
+    public MainActivityDBResultHandler(GoogleMap map, HashMap<String, Float> markerIDToAccuracyHM, Activity a) {
         mMap = map;
         mActivity = a;
+        this.markerIDToAccuracyHM = markerIDToAccuracyHM;
     }
 
 
@@ -52,30 +55,30 @@ public class MainActivityDBResultHandler extends Handler {
                                  + locInfo.provider);
                 float Lat = locInfo.lat;
                 float Long = locInfo.lng;
+                float acc = locInfo.accuracy;
                 MarkerOptions mo = new MarkerOptions();
                 mo.position(new LatLng(Lat, Long));
                 mo.title(locInfo.title);
                 mo.snippet(locInfo.snippet);
-                mMap.addMarker(mo);
+                markerIDToAccuracyHM.put(mMap.addMarker(mo).getId(), acc);
             } else {
                 Log.e(TAG + tag, "LocationInfo case, locInfo is null!");
             }
             break;
-        case avgFixIntID:
+        case avgFixAndNumPointsIntID:
             String avgFixIntString = b.getString(LFnC.WThrdAvgFixIntKey);
             if (avgFixIntString != null) {
                 avgIntTv.setText(avgFixIntString);
             } else {
                 Log.e(TAG + tag, "avgFixInterval case: data is null!");
             }
-            break;
-        case numPointsID:
             String npTVString = b.getString(LFnC.WThrdNPString);
             if (npTVString != null) {
                 npTv.setText(npTVString);
             } else {
                 Log.e(TAG + tag, "npString case. npTVString is null!");
             }
+            break;
         }
     }
 }

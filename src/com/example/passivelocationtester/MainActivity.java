@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
         MapFragment mfrag = (MapFragment) getFragmentManager().findFragmentById(R.id.mainMapFrag);
         mMap = mfrag.getMap();
-        mHandler = new MainActivityDBResultHandler(mMap, this);
+        mHandler = new MainActivityDBResultHandler(mMap, markerIDToAccuracyHM, this);
         mDBWorker = new MarkerDBWorker(mHandler, this);
 
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
