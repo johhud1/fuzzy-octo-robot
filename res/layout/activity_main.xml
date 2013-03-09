@@ -65,6 +65,11 @@
                 android:layout_height="wrap_content"
                 android:onClick="onShowSkBarBtnClick"/>
             <CheckBox
+                android:id="@+id/noMarkerMergeCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/noMarkerMergeCBText"/>
+            <Button
                 android:id="@+id/ShowAllLocationFixButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

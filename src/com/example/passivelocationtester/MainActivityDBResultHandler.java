@@ -1,6 +1,10 @@
 package com.example.passivelocationtester;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -56,10 +60,15 @@ public class MainActivityDBResultHandler extends Handler {
                 float Lat = locInfo.lat;
                 float Long = locInfo.lng;
                 float acc = locInfo.accuracy;
+                long duration = locInfo.duration;
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                String locDuration = sdf.format(new Date(duration - TimeZone.getDefault().getRawOffset()));
+                Log.d(TAG+tag, "Duration: " + locDuration);
                 MarkerOptions mo = new MarkerOptions();
                 mo.position(new LatLng(Lat, Long));
-                mo.title(locInfo.title);
+                mo.title(locInfo.title + " "+locDuration);
                 mo.snippet(locInfo.snippet);
+
                 markerIDToAccuracyHM.put(mMap.addMarker(mo).getId(), acc);
             } else {
                 Log.e(TAG + tag, "LocationInfo case, locInfo is null!");

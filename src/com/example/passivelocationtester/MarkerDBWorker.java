@@ -2,12 +2,16 @@ package com.example.passivelocationtester;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Vector;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -22,7 +26,7 @@ import android.util.Log;
 
 
 public class MarkerDBWorker{
-    String TAG = "MarkerDBWorker";
+    static String TAG = "MarkerDBWorker";
     static final int getDBMarkerInfo = 1;
 
     Handler mainThreadHandler;
@@ -31,8 +35,6 @@ public class MarkerDBWorker{
     public Handler mServiceHandler;
     Messenger mMessenger;
     SQLiteDatabase mDB;
-    long timeStart;
-    long timeEnd;
 
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -46,7 +48,8 @@ public class MarkerDBWorker{
             case getDBMarkerInfo:
                 long ts = msg.getData().getLong(LFnC.WTGetDBMarkerTSKey);
                 long te = msg.getData().getLong(LFnC.WTGetDBMarkerTEKey);
-                go(ts, te);
+                boolean noMarkerMerge = msg.getData().getBoolean(LFnC.WTNoMarkerMergingKey);
+                run(ts, te, noMarkerMerge);
             }
         }
     }
@@ -79,15 +82,9 @@ public class MarkerDBWorker{
     }
 
 
-    private void go(long ts, long te){
-        timeStart = ts;
-        timeEnd = te;
-        run();
-    }
-
-
-    private void run() {
-        String tag = "run";
+    private void run(long timeStart, long timeEnd, boolean noMarkerMerge) {
+        String tag = ":run";
+        Log.d(TAG+tag, "noMarkerMerge: "+noMarkerMerge);
         SQLiteDatabase db = new LocationDB(mContext).getReadableDatabase();
         Message m;
 
@@ -121,53 +118,64 @@ public class MarkerDBWorker{
         MarkerOptions mo = new MarkerOptions();
         mo.draggable(false);
 
-        long fixTimeTally = 0;
+        long intFixTimeTally = 0;
         long prevFixTime = 0;
-        ArrayList<LocationInfo> markerInfoList = new ArrayList<LocationInfo>();
+        LocationInfo prevLoc = null;
+        boolean isNewGroup = true;
+        long aLocDuration = 0;
         int latInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_LAT);
         int longInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_LONG);
         int tsInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_DATE);
         int provInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_PROVIDER_TYPE);
         int accInd = mcurs.getColumnIndex(LocationDB.KEY_ACCURACY);
+        LocationInfo firstLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd); 
         try {
             while (!mcurs.isAfterLast()) {
-
-                Lat = mcurs.getFloat(latInd);
-                Long = mcurs.getFloat(longInd);
-                if (accInd != -1) {
-                    accuracy = mcurs.getFloat(accInd);
-                }
+                LocationInfo candidateLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd);
+//                Lat = mcurs.getFloat(latInd);
+//                Long = mcurs.getFloat(longInd);
+//                if (accInd != -1) {
+//                    accuracy = mcurs.getFloat(accInd);
+//                }
                 date = mcurs.getLong(tsInd);
+                long timeGap = 0;
                 Log.d(TAG, "got date as: " + date);
                 if (prevFixTime != 0) {
+                    timeGap = (date - prevFixTime);
                     StringBuilder sb = new StringBuilder();
                     android.support.v4.util.TimeUtils.formatDuration(date - prevFixTime, sb);
                     Log.d(TAG + tag,
                           "timeDifference: " + (date - prevFixTime) + " format:" + sb.toString());
 
-                    fixTimeTally += (date - prevFixTime);
+                    intFixTimeTally += timeGap;
+                    aLocDuration += timeGap;
+                }
+
+//                provider = mcurs.getString(provInd);
+//                String title = (new Date(date).toLocaleString());
+//                String snippet = "Accuracy: " + accuracy + " Provider: " + provider;
+
+
+                if(isMoving(candidateLoc, prevLoc, timeGap) || noMarkerMerge){
+                    // put the marker and accuracy together in the message
+                    Bundle b = new Bundle();
+                    firstLoc.setDuration(aLocDuration);
+                    b.putParcelable(LFnC.WThrdLocationInfoMessageKey, firstLoc);
+                    m = Message.obtain();
+                    m.what = MainActivityDBResultHandler.locInfoID;
+                    m.setData(b);
+                    mMessenger.send(m);
+                    // markerInfo.put(map.addMarker(mo).getId(), accuracy);
+                    aLocDuration = 0;
+                    firstLoc = candidateLoc;
                 }
                 prevFixTime = date;
-                provider = mcurs.getString(provInd);
-                String title = (new Date(date).toLocaleString());
-                String snippet = "Accuracy: " + accuracy + " Provider: " + provider;
-
-                // put the marker and accuracy together in the message
-                Bundle b = new Bundle();
-                b.putParcelable(LFnC.WThrdLocationInfoMessageKey, new LocationInfo(Lat, Long,
-                                                                                   provider,
-                                                                                   snippet, title,
-                                                                                   accuracy));
-                m = Message.obtain();
-                m.what = MainActivityDBResultHandler.locInfoID;
-                m.setData(b);
-                mMessenger.send(m);
-                // markerInfo.put(map.addMarker(mo).getId(), accuracy);
+                prevLoc = candidateLoc;
                 mcurs.moveToNext();
             }
 
-            Log.d(TAG + tag, "fixTimeTally: " + fixTimeTally + " count:" + mcurs.getPosition());
-            avgFixInterval = fixTimeTally / mcurs.getPosition();
+            Log.d(TAG + tag, "fixTimeTally: " + intFixTimeTally + " count:" + mcurs.getPosition());
+            avgFixInterval = intFixTimeTally / mcurs.getPosition();
             StringBuilder sb = new StringBuilder();
             android.support.v4.util.TimeUtils.formatDuration(avgFixInterval, sb);
             String avgFixIntString = "Avg. Fix interval: " + sb.toString();
@@ -191,6 +199,41 @@ public class MarkerDBWorker{
         // TODO: move this to the MainActivityDBResultHandler
         // avgIntTv.setText(avgFixIntString);
         // npTv.setText(npTVString);
+    }
+
+
+    private LocationInfo NewLocInfoFromDB(Cursor mcurs, int latInd, int longInd, int tsInd, int provInd, int accInd) {
+        // TODO Auto-generated method stub
+        float Lat, Long, accuracy = -1;
+        long date = mcurs.getLong(tsInd);
+        Lat = mcurs.getFloat(latInd);
+        Long = mcurs.getFloat(longInd);
+        String provider = mcurs.getString(provInd);
+        String title = (new Date(date).toLocaleString());
+        if (accInd != -1) {
+            accuracy = mcurs.getFloat(accInd);
+        }
+        String snippet = "Accuracy: " + accuracy + " Provider: " + provider;
+        return new LocationInfo(Lat, Long,
+                         provider,
+                         snippet, title,
+                         accuracy);
+    }
+
+
+    private boolean isMoving(LocationInfo pos, LocationInfo prevLoc, long timeGap) {
+        if (prevLoc==null){
+            return false;
+        }
+
+        float[] results = new float[3];
+        Location.distanceBetween(pos.lat, pos.lng, prevLoc.lat, prevLoc.lng, results); //meters distance held in results[0]
+        //if velocity is over 1 m/s or distance difference > 25 than 'its moving'
+        if (results[0] < LFnC.isMovingDistanceThreshold){
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

@@ -9,5 +9,6 @@
     <string name="ToBeComputed">To be computed</string>
     <string name="ShowAllLocationsButtonText">Show All (Warning, can be very slow!)</string>
     <string name="ShowMarkerSkBrButtonText">Display!</string>
+    <string name="noMarkerMergeCBText">No Marker Merging</string>
 
 </resources>

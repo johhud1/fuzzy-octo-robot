@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -61,6 +63,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
     String TAG = "MainActivity";
     private HashMap<String, Float> markerIDToAccuracyHM = new HashMap<String, Float>();
     protected boolean mShowAllLocationMarkers = false;
+    protected boolean mNoMarkerMerge = false;
     long mStartShowingLocTime = 0;
 
 
@@ -70,6 +73,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         setContentView(R.layout.activity_main);
         setupShowAllLocationsButton();
         setupShowMarkerSeekbar();
+        setupNoMarkerMergeButton();
         SharedPreferences mPrefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
         startService(new Intent().setClass(this, LocTrackerService.class));
@@ -88,15 +92,24 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         } else {
 
         }
-        mLocDB = new LocationDB(this);
-        if (mShowAllLocationMarkers) {
-            // mDB = mLocDB.getReadableDatabase();
 
-            mMap.clear();
-            drawDBElementsOnMap(mMap, mDB);
-            // mDB.close();
-            // mDB = null;
-        }
+    }
+
+
+    private void setupNoMarkerMergeButton() {
+        CheckBox b = (CheckBox) findViewById(R.id.noMarkerMergeCB);
+        b.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mNoMarkerMerge = true;
+                } else {
+                    mNoMarkerMerge = false;
+                }
+
+            }
+        });
 
     }
 
@@ -127,6 +140,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         m.setTarget(mDBWorker.mServiceHandler);
         b.putLong(LFnC.WTGetDBMarkerTEKey, timeEnd);
         b.putLong(LFnC.WTGetDBMarkerTSKey, timeStart);
+        b.putBoolean(LFnC.WTNoMarkerMergingKey, mNoMarkerMerge);
         m.what = MarkerDBWorker.getDBMarkerInfo;
         m.setData(b);
         m.sendToTarget();
@@ -160,19 +174,13 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
 
     private void setupShowAllLocationsButton() {
-        Button ShowAllLocButton = (CheckBox) findViewById(R.id.ShowAllLocationFixButton);
+        Button ShowAllLocButton = (Button) findViewById(R.id.ShowAllLocationFixButton);
         ShowAllLocButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                CheckBox cb = (CheckBox) v;
-                if (cb.isChecked()) {
-                    Log.d(TAG, "checkbox: isChecked() = true!");
-                    drawDBElementsOnMap(mMap, mLocDB.getReadableDatabase());
-                    mShowAllLocationMarkers = true;
-                } else {
-                    mShowAllLocationMarkers = false;
-                }
+                mMap.clear();
+                drawDBElementsOnMap(mMap, new LocationDB(mContext).getReadableDatabase());
             }
         });
     }

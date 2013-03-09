@@ -15,6 +15,7 @@ public class LocationInfo implements Parcelable {
     float accuracy;     //index 3
     float lat;          //index 4
     float lng;          //index 5
+    long duration;
 
     private LocationInfo(Parcel in) {
         in.setDataPosition(0);
@@ -28,6 +29,7 @@ public class LocationInfo implements Parcelable {
         accuracy = flts[0];
         lat = flts[1];
         lng = flts[2];
+        duration = in.readLong();
     }
 
 
@@ -62,16 +64,28 @@ public class LocationInfo implements Parcelable {
         flts[2] = lng;
         out.writeStringArray(strs);
         out.writeFloatArray(flts);
+        out.writeLong(duration);
+    }
 
+    public void setDuration(long d){
+        duration = d;
     }
 
     public LocationInfo(float lat, float lng, String p, String snip, String t, float acc){
+        constructor(lat, lng, p, snip, t, acc, (long)0);
+    }
+    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long d){
+        constructor(lat, lng, p, snip, t, acc, d);
+    }
+
+    private void constructor(float lat, float lng, String p, String snip, String t, float acc, long d){
         this.lat = lat;
         this.lng = lng;
         provider = p;
         snippet = snip;
         title = t;
         accuracy = acc;
+        duration = d;
     }
 
 }
