@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Date;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -47,6 +49,7 @@ public class LocTrackerService extends Service implements LocationListener {
             running = true;
             // mServiceHandler.sendMessage(msg);
             LM = (LocationManager) getSystemService(LOCATION_SERVICE);
+            makeForeground();
             startPassiveLocService();
 
         } else {
@@ -69,6 +72,19 @@ public class LocTrackerService extends Service implements LocationListener {
         return null;
     }
 
+    private void makeForeground() {
+        int NOTIFICATION_ID = 2;
+        Notification notification =
+            new Notification(R.drawable.ic_launcher, "starting passive monitoring",
+                             System.currentTimeMillis());
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(this, "Passive Location Tracker", "Tracking the trackers", pendingIntent);
+
+        startForeground(NOTIFICATION_ID, notification);
+    }
 
     @Override
     public void onDestroy() {

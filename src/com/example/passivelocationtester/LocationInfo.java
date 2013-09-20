@@ -16,6 +16,7 @@ public class LocationInfo implements Parcelable {
     float lat;          //index 4
     float lng;          //index 5
     long duration;
+    int markersMerged;
 
     private LocationInfo(Parcel in) {
         in.setDataPosition(0);
@@ -30,6 +31,7 @@ public class LocationInfo implements Parcelable {
         lat = flts[1];
         lng = flts[2];
         duration = in.readLong();
+        markersMerged = in.readInt();
     }
 
 
@@ -65,6 +67,7 @@ public class LocationInfo implements Parcelable {
         out.writeStringArray(strs);
         out.writeFloatArray(flts);
         out.writeLong(duration);
+        out.writeInt(markersMerged);
     }
 
     public void setDuration(long d){
@@ -72,13 +75,16 @@ public class LocationInfo implements Parcelable {
     }
 
     public LocationInfo(float lat, float lng, String p, String snip, String t, float acc){
-        constructor(lat, lng, p, snip, t, acc, (long)0);
+        constructor(lat, lng, p, snip, t, acc, (long)0, 0);
     }
     public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long d){
-        constructor(lat, lng, p, snip, t, acc, d);
+        constructor(lat, lng, p, snip, t, acc, d, 0);
+    }
+    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long d, int mm){
+        constructor(lat, lng, p, snip, t, acc, d, mm);
     }
 
-    private void constructor(float lat, float lng, String p, String snip, String t, float acc, long d){
+    private void constructor(float lat, float lng, String p, String snip, String t, float acc, long d, int markersMerged){
         this.lat = lat;
         this.lng = lng;
         provider = p;
@@ -86,6 +92,7 @@ public class LocationInfo implements Parcelable {
         title = t;
         accuracy = acc;
         duration = d;
+        this.markersMerged = markersMerged;
     }
 
 }

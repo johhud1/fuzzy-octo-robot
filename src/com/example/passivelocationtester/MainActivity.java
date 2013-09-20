@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         setupShowAllLocationsButton();
         setupShowMarkerSeekbar();
         setupNoMarkerMergeButton();
-        SharedPreferences mPrefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences mPrefs = getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
 
         startService(new Intent().setClass(this, LocTrackerService.class));
 
@@ -87,9 +87,11 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         lm.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, this, null);
 
         mMap.setOnMarkerClickListener(this);
-        if (mPrefs.getBoolean("first", true)) {
-            mPrefs.edit().putBoolean("first", false);
+        if (mPrefs.getBoolean(LFnC.PREF_FIRST_TIME_MAIN_ACTIVITY_KEY, true)) {
+            mPrefs.edit().putBoolean(LFnC.PREF_FIRST_TIME_MAIN_ACTIVITY_KEY, false);
+            //this is the first time opening the application (I think)
         } else {
+            //not first time opening the application
 
         }
 
@@ -150,14 +152,17 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        String tag = ":onMarkerClick";
         float accuracy = markerIDToAccuracyHM.get(marker.getId());
+        Log.d(TAG+tag, "using ID:"+marker.getId()+" got accuracy:"+accuracy+" from HashMap");
         if (mMap == null) {
             Log.e(TAG, "onMarkerClick: Map is null!!");
             return false;
         }
         LatLng ll = marker.getPosition();
-        Double daccuracy = new Double(accuracy);
+        Double daccuracy = Double.valueOf(accuracy);
         if (mCurCircle == null) {
+            Log.d(TAG+tag, "mCurCircle is null. Constructing new one.");
             CircleOptions co = new CircleOptions();
             co.strokeColor(Color.parseColor("#90" + "33b5e5"));
             co.fillColor(Color.parseColor("#900099cc"));
@@ -166,6 +171,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
             co.radius(daccuracy);
             mCurCircle = mMap.addCircle(co);
         } else {
+            Log.d(TAG+tag, "mCurCircle is not null. reposition old one.");
             mCurCircle.setCenter(ll);
             mCurCircle.setRadius(daccuracy);
         }
@@ -234,7 +240,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
     @Override
     public void onLocationChanged(Location location) {
         LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(ll, 17, 0, 0)));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(ll, 15, 0, 0)));
     }
 
 

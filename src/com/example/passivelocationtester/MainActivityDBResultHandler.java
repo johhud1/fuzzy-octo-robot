@@ -66,10 +66,11 @@ public class MainActivityDBResultHandler extends Handler {
                 Log.d(TAG+tag, "Duration: " + locDuration);
                 MarkerOptions mo = new MarkerOptions();
                 mo.position(new LatLng(Lat, Long));
-                mo.title(locInfo.title + " "+locDuration);
-                mo.snippet(locInfo.snippet);
-
-                markerIDToAccuracyHM.put(mMap.addMarker(mo).getId(), acc);
+                mo.title(locInfo.title + " Duration:"+locDuration);
+                mo.snippet(locInfo.snippet+" Merged:"+locInfo.markersMerged);
+                String id = mMap.addMarker(mo).getId();
+                Log.d(TAG+tag, "added marker to IDtoAccuracy HashMap with id:"+id);
+                markerIDToAccuracyHM.put(id, acc);
             } else {
                 Log.e(TAG + tag, "LocationInfo case, locInfo is null!");
             }

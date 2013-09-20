@@ -1,5 +1,6 @@
 package com.example.passivelocationtester;
 
+import java.lang.ref.WeakReference;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -29,16 +30,18 @@ public class MarkerDBWorker{
     static String TAG = "MarkerDBWorker";
     static final int getDBMarkerInfo = 1;
 
-    Handler mainThreadHandler;
-    Context mContext;
+    public Handler mainThreadHandler;
+    public Context mContext;
     Looper mServiceLooper;
     public Handler mServiceHandler;
-    Messenger mMessenger;
+    public Messenger mMessenger;
     SQLiteDatabase mDB;
 
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
+    private final static class ServiceHandler extends Handler {
+        WeakReference<MarkerDBWorker> outerClass;
+        public ServiceHandler(Looper looper, WeakReference<MarkerDBWorker> outerClass) {
             super(looper);
+            this.outerClass = outerClass;
         }
 
 
@@ -49,7 +52,7 @@ public class MarkerDBWorker{
                 long ts = msg.getData().getLong(LFnC.WTGetDBMarkerTSKey);
                 long te = msg.getData().getLong(LFnC.WTGetDBMarkerTEKey);
                 boolean noMarkerMerge = msg.getData().getBoolean(LFnC.WTNoMarkerMergingKey);
-                run(ts, te, noMarkerMerge);
+                run(ts, te, noMarkerMerge, outerClass);
             }
         }
     }
@@ -77,15 +80,15 @@ public class MarkerDBWorker{
         thread.start();
 
         mServiceLooper = thread.getLooper();
-        mServiceHandler = new ServiceHandler(mServiceLooper);
+        mServiceHandler = new ServiceHandler(mServiceLooper, new WeakReference<MarkerDBWorker>(this));
 
     }
 
 
-    private void run(long timeStart, long timeEnd, boolean noMarkerMerge) {
+    private static void run(long timeStart, long timeEnd, boolean noMarkerMerge, WeakReference<MarkerDBWorker> thisClass) {
         String tag = ":run";
         Log.d(TAG+tag, "noMarkerMerge: "+noMarkerMerge);
-        SQLiteDatabase db = new LocationDB(mContext).getReadableDatabase();
+        SQLiteDatabase db = new LocationDB(thisClass.get().mContext).getReadableDatabase();
         Message m;
 
         long avgFixInterval = 0;
@@ -95,8 +98,8 @@ public class MarkerDBWorker{
         // mMap.setOnMapClickListener(this);
         Log.d(TAG + tag, "dbPath: " + db.getPath());
         Cursor mcurs = null;
-        Log.d(TAG + tag, "got startTime(" + DateUtils.formatDateTime(mContext, timeStart, 0)
-                         + ") and endTime(" + DateUtils.formatDateTime(mContext, timeEnd, 0) + ")");
+        Log.d(TAG + tag, "got startTime(" + DateUtils.formatDateTime(thisClass.get().mContext, timeStart, 0)
+                         + ") and endTime(" + DateUtils.formatDateTime(thisClass.get().mContext, timeEnd, 0) + ")");
         if (timeStart == 0) {
             mcurs =
                 db.query(LocationDB.LOCATION_TABLE_NAME, null, LocationDB.KEY_DATE + " < "
@@ -112,23 +115,21 @@ public class MarkerDBWorker{
             Log.d(TAG + tag, "addDBElementsToMap; cursor is empty (is the DB emtpy?)");
             return;
         }
-        float Lat, Long, accuracy = -1;
+
         long date;
-        String provider;
         MarkerOptions mo = new MarkerOptions();
         mo.draggable(false);
-
         long intFixTimeTally = 0;
         long prevFixTime = 0;
         LocationInfo prevLoc = null;
-        boolean isNewGroup = true;
         long aLocDuration = 0;
         int latInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_LAT);
         int longInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_LONG);
         int tsInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_DATE);
         int provInd = mcurs.getColumnIndexOrThrow(LocationDB.KEY_PROVIDER_TYPE);
         int accInd = mcurs.getColumnIndex(LocationDB.KEY_ACCURACY);
-        LocationInfo firstLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd); 
+        int markerCount = 0;
+        LocationInfo firstLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd);
         try {
             while (!mcurs.isAfterLast()) {
                 LocationInfo candidateLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd);
@@ -156,19 +157,22 @@ public class MarkerDBWorker{
 //                String snippet = "Accuracy: " + accuracy + " Provider: " + provider;
 
 
-                if(isMoving(candidateLoc, prevLoc, timeGap) || noMarkerMerge){
+                if(isMoving(candidateLoc, prevLoc, timeGap) || noMarkerMerge || mcurs.isLast()){
                     // put the marker and accuracy together in the message
                     Bundle b = new Bundle();
+                    firstLoc.markersMerged = markerCount;
                     firstLoc.setDuration(aLocDuration);
                     b.putParcelable(LFnC.WThrdLocationInfoMessageKey, firstLoc);
                     m = Message.obtain();
                     m.what = MainActivityDBResultHandler.locInfoID;
                     m.setData(b);
-                    mMessenger.send(m);
+                    thisClass.get().mMessenger.send(m);
                     // markerInfo.put(map.addMarker(mo).getId(), accuracy);
                     aLocDuration = 0;
+                    markerCount = -1;
                     firstLoc = candidateLoc;
                 }
+                markerCount++;
                 prevFixTime = date;
                 prevLoc = candidateLoc;
                 mcurs.moveToNext();
@@ -188,7 +192,7 @@ public class MarkerDBWorker{
             m = Message.obtain();
             m.what = MainActivityDBResultHandler.avgFixAndNumPointsIntID;
             m.setData(b);
-            mMessenger.send(m);
+            thisClass.get().mMessenger.send(m);
 
 
         } catch (RemoteException e) {
@@ -202,7 +206,7 @@ public class MarkerDBWorker{
     }
 
 
-    private LocationInfo NewLocInfoFromDB(Cursor mcurs, int latInd, int longInd, int tsInd, int provInd, int accInd) {
+    private static LocationInfo NewLocInfoFromDB(Cursor mcurs, int latInd, int longInd, int tsInd, int provInd, int accInd) {
         // TODO Auto-generated method stub
         float Lat, Long, accuracy = -1;
         long date = mcurs.getLong(tsInd);
@@ -221,7 +225,7 @@ public class MarkerDBWorker{
     }
 
 
-    private boolean isMoving(LocationInfo pos, LocationInfo prevLoc, long timeGap) {
+    private static boolean isMoving(LocationInfo pos, LocationInfo prevLoc, long timeGap) {
         if (prevLoc==null){
             return false;
         }
