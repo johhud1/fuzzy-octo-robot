@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">PassiveLocationMonitor</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">MapActivity</string>
     <string name="menu_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="StatsTitle">Statistics:</string>
@@ -10,5 +10,8 @@
     <string name="ShowAllLocationsButtonText">Show All (Warning, can be very slow!)</string>
     <string name="ShowMarkerSkBrButtonText">Display!</string>
     <string name="noMarkerMergeCBText">No Marker Merging</string>
+    <string name="mapview_activity_indicator">Map View</string>
+    <string name="timerange_activity_indicator">Time View</string>
+    <string name="label_timerange_activity">Time View lbl</string>
 
 </resources>

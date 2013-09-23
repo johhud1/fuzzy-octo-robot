@@ -195,7 +195,6 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
     protected void updateDBElementsOnMap(GoogleMap mMap2, SQLiteDatabase readableDatabase) {
         String tag = "updateDBElementsOnMap";
         Log.d(TAG + ":" + tag, "");
-
     }
 
 
