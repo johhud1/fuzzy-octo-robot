@@ -163,6 +163,7 @@ public class MarkerDBWorker{
                     firstLoc.markersMerged = markerCount;
                     firstLoc.setDuration(aLocDuration);
                     b.putParcelable(LFnC.WThrdLocationInfoMessageKey, firstLoc);
+                    Log.d(TAG, " sending location marker info with LocationInfo: "+firstLoc.toString());
                     m = Message.obtain();
                     m.what = MainActivityDBResultHandler.locInfoID;
                     m.setData(b);
@@ -182,8 +183,8 @@ public class MarkerDBWorker{
             avgFixInterval = intFixTimeTally / mcurs.getPosition();
             StringBuilder sb = new StringBuilder();
             android.support.v4.util.TimeUtils.formatDuration(avgFixInterval, sb);
-            String avgFixIntString = "Avg. Fix interval: " + sb.toString();
-            String npTVString = "Total Number of Loc Requests: " + mcurs.getPosition();
+            String avgFixIntString = thisClass.get().mContext.getString(R.string.avg_fig_int_prefix) + sb.toString();
+            String npTVString = thisClass.get().mContext.getString(R.string.number_of_pings_prefix) + mcurs.getPosition();
 
             //initialize and send message containing
             Bundle b = new Bundle();
@@ -200,14 +201,10 @@ public class MarkerDBWorker{
         } finally {
             db.close();
         }
-        // TODO: move this to the MainActivityDBResultHandler
-        // avgIntTv.setText(avgFixIntString);
-        // npTv.setText(npTVString);
     }
 
 
     private static LocationInfo NewLocInfoFromDB(Cursor mcurs, int latInd, int longInd, int tsInd, int provInd, int accInd) {
-        // TODO Auto-generated method stub
         float Lat, Long, accuracy = -1;
         long date = mcurs.getLong(tsInd);
         Lat = mcurs.getFloat(latInd);

@@ -13,5 +13,7 @@
     <string name="mapview_activity_indicator">Map View</string>
     <string name="timerange_activity_indicator">Time View</string>
     <string name="label_timerange_activity">Time View lbl</string>
+    <string name="number_of_pings_prefix">Total Number of Loc Requests: </string>
+    <string name="avg_fig_int_prefix">Avg. Fix interval: </string>
 
 </resources>

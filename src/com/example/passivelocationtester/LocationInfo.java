@@ -34,6 +34,11 @@ public class LocationInfo implements Parcelable {
         markersMerged = in.readInt();
     }
 
+    @Override
+    public String toString(){
+        return "{title: "+title+", snippet: "+snippet+", provider: "+provider+
+            ", accuracy: "+accuracy+", lat: "+lat+"lng: "+lng+", duration: "+duration+", markersMerged: "+markersMerged+"}";
+    }
 
     @Override
     public int describeContents() {

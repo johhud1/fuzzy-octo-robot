@@ -65,6 +65,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
     protected boolean mShowAllLocationMarkers = false;
     protected boolean mNoMarkerMerge = false;
     long mStartShowingLocTime = 0;
+    SharedPreferences mPrefs;
 
 
     @Override
@@ -74,7 +75,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         setupShowAllLocationsButton();
         setupShowMarkerSeekbar();
         setupNoMarkerMergeButton();
-        SharedPreferences mPrefs = getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
+        mPrefs = getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
 
         startService(new Intent().setClass(this, LocTrackerService.class));
 
@@ -95,6 +96,15 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
         }
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mMap.clear();
+        long timeEnd = mPrefs.getLong(LFnC.PREF_MARKER_END_KEY, System.currentTimeMillis());
+        long timeStart = mPrefs.getLong(LFnC.PREF_MARKER_START_KEY, 0);
+        drawDBElementsOnMap(mMap, timeEnd, timeStart);
     }
 
 
@@ -205,6 +215,8 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         }
         // SQLiteDatabase db = mLocDB.getReadableDatabase();
         mMap.clear();
+        TextView nOfPTV = (TextView) findViewById(R.id.NumberOfPingsTV);
+        nOfPTV.setText("0");
         drawDBElementsOnMap(mMap, System.currentTimeMillis(), mStartShowingLocTime);
         // db.close();
     }

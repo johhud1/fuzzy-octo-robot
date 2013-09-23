@@ -8,8 +8,11 @@ import java.util.Date;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,12 +31,21 @@ import android.os.Process;
 
 public class LocTrackerService extends Service implements LocationListener {
     private String TAG = "LocTrackerService";
-    private Looper mServiceLooper;
     private LocationManager LM;
     private SQLiteDatabase mDB;
     private boolean running = false;
+    private Context mContext = this;
 
+    protected class LocationServiceBootReceiver extends BroadcastReceiver{
+        String tag = getClass().getName();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(tag, "received a boot_completed broadcast. Restarting " + LocTrackerService.class.getName());
+            Intent i = new Intent().setClass(mContext, LocTrackerService.class);
+            startService(i);
+        }
 
+    }
 
     @Override
     public void onCreate() {
@@ -51,6 +63,7 @@ public class LocTrackerService extends Service implements LocationListener {
             LM = (LocationManager) getSystemService(LOCATION_SERVICE);
             makeForeground();
             startPassiveLocService();
+            registerReceiver(new LocationServiceBootReceiver(), new IntentFilter(Intent.ACTION_BOOT_COMPLETED));
 
         } else {
             Log.d(TAG, "onStartCommand: service running, ignoring startCommand");

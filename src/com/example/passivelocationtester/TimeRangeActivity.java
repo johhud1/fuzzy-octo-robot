@@ -1,6 +1,7 @@
 package com.example.passivelocationtester;
 
 import java.sql.Date;
+import java.util.prefs.Preferences;
 
 import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.BinBarGraphView;
@@ -8,13 +9,19 @@ import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.LineGraphView;
+import com.jjoe64.graphview.OnValuesSelectedListener;
 import com.jjoe64.graphview.SelectableBinBarGraphView;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -25,12 +32,29 @@ public class TimeRangeActivity extends Activity {
     public static final long timeBoxSize = 1 * LFnC.HOUR;
     public static final long viewPortSize = LFnC.DAY; //one day in milliseconds
 
+    SharedPreferences prefs;
+
+    protected class PassiveLocationGraphOnValueSelectedListener implements OnValuesSelectedListener{
+        String tag = getClass().getName();
+        @Override
+        public void OnValuesSelected(long valueSelectionStart, long valueSelectionEnd) {
+            Log.d(tag, "onValuesSelected: valueSelectionStart: " + valueSelectionStart + " valueSelectionEnd: " + valueSelectionEnd);
+            Editor editor = prefs.edit();
+            editor.putLong(LFnC.PREF_MARKER_START_KEY, valueSelectionStart);
+            editor.putLong(LFnC.PREF_MARKER_END_KEY, valueSelectionEnd);
+            editor.commit();
+        }
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         final String tag = getClass().getName() + ":onCreate";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.time_range);
+
+        //get application shared preferences
+        prefs = (SharedPreferences) getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
 
         // get location data
         SQLiteDatabase db = new LocationDB(this).getReadableDatabase();
@@ -53,8 +77,9 @@ public class TimeRangeActivity extends Activity {
             }
 
             //data = DataBinningHelper.binData(data, timeBoxSize);
-            GraphView graphView = new SelectableBinBarGraphView(this, "Location Requests", false, LFnC.HOUR);
-            graphView.setManualYAxisBounds(50d, 0d);
+            GraphView graphView = new SelectableBinBarGraphView(this, "Location Requests", false, LFnC.HOUR,
+                                                                new PassiveLocationGraphOnValueSelectedListener());
+            //graphView.setManualYAxisBounds(50d, 0d);
             // add data
             graphView.addSeries(new GraphViewSeries(data));
             graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
@@ -71,6 +96,7 @@ public class TimeRangeActivity extends Activity {
             // set view port, start=2, size=40
             graphView.setViewPort(System.currentTimeMillis()-viewPortSize, viewPortSize);
             graphView.setScrollable(true);
+            graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));
             // optional - activate scaling / zooming
             graphView.setScalable(true);
 
@@ -80,7 +106,5 @@ public class TimeRangeActivity extends Activity {
             Log.d(tag, "cursor is empty");
         }
         db.close();
-
-
     }
 }
