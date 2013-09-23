@@ -4,11 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <SeekBar
-        android:id="@+id/binsize_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </SeekBar>
     <TextView
         android:id="@+id/binsize_textview"
         android:layout_width="wrap_content"

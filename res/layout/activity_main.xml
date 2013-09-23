@@ -49,15 +49,10 @@
                 android:text="@string/ToBeComputed"/>
                 <!-- android:textColor="#ffffffff" -->
             <TextView
-                android:id="@+id/HowFarBackSkBrTV"
+                android:id="@+id/LocRequestDisplayRangeTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-            <SeekBar
-                android:id="@+id/HowFarBackSkBr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:progress="5"/>
             <Button
                 android:id="@+id/ShowSkBarBtn"
                 android:text="@string/ShowMarkerSkBrButtonText"

@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupShowAllLocationsButton();
-        setupShowMarkerSeekbar();
+        //setupShowMarkerSeekbar();
         setupNoMarkerMergeButton();
         mPrefs = getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
 
@@ -104,9 +104,23 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         mMap.clear();
         long timeEnd = mPrefs.getLong(LFnC.PREF_MARKER_END_KEY, System.currentTimeMillis());
         long timeStart = mPrefs.getLong(LFnC.PREF_MARKER_START_KEY, 0);
+        setShowingLocationPingsBetweenText(timeStart, timeEnd);
         drawDBElementsOnMap(mMap, timeEnd, timeStart);
     }
 
+
+    private void setShowingLocationPingsBetweenText(long timeStart, long timeEnd) {
+        String tag = getClass().getName()+ ":setShowingLocationPingsBetweenText";
+        TextView tv = (TextView) findViewById(R.id.LocRequestDisplayRangeTV);
+        String msg = new Date(timeStart).toLocaleString() + " - "+ new Date(timeEnd).toLocaleString();
+        if(tv != null){
+            Log.d(tag, "setting location request range TextView to :"+msg);
+            tv.setText(getString(R.string.loc_request_displayrange_prefix) + msg);
+        } else {
+            Log.e(tag, " location request TextView could not be found! (was null)");
+        }
+
+    }
 
     private void setupNoMarkerMergeButton() {
         CheckBox b = (CheckBox) findViewById(R.id.noMarkerMergeCB);
@@ -125,13 +139,13 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
     }
 
-
+/*
     private void setupShowMarkerSeekbar() {
         SeekBar sb = (SeekBar) findViewById(R.id.HowFarBackSkBr);
         sb.setOnSeekBarChangeListener(this);
         sb.setProgress(mDefaultPastLocProgress);
     }
-
+*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -228,7 +242,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         Log.d(TAG + ":" + tag, "progress now: " + progress);
         long duration = DateUtils.HOUR_IN_MILLIS * progress;
         Date showLocsAfter = new Date(System.currentTimeMillis() - duration);
-        TextView tv = (TextView) findViewById(R.id.HowFarBackSkBrTV);
+        TextView tv = (TextView) findViewById(R.id.LocRequestDisplayRangeTV);
         tv.setText("Only display location fixes after: " + showLocsAfter.toLocaleString());
         mStartShowingLocTime = System.currentTimeMillis() - duration;
     }

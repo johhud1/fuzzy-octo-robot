@@ -90,7 +90,7 @@ public class TimeRangeActivity extends Activity {
                     if(isValueX){
                         return new Date(date).toLocaleString();
                     }
-                    return String.valueOf(value);
+                    return String.valueOf(Math.round(value));
                 }
             });
             // set view port, start=2, size=40
