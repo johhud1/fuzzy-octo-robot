@@ -50,8 +50,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 
-public class MainActivity extends Activity implements OnMarkerClickListener,
-    OnSeekBarChangeListener, LocationListener {
+public class MainActivity extends Activity implements OnMarkerClickListener, LocationListener {
     Context mContext = this;
     LocationDB mLocDB;
     SQLiteDatabase mDB;
@@ -139,14 +138,6 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
     }
 
-/*
-    private void setupShowMarkerSeekbar() {
-        SeekBar sb = (SeekBar) findViewById(R.id.HowFarBackSkBr);
-        sb.setOnSeekBarChangeListener(this);
-        sb.setProgress(mDefaultPastLocProgress);
-    }
-*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -161,6 +152,10 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
 
     private void drawDBElementsOnMap(GoogleMap map, long timeEnd, long timeStart) {
+        //set stats to none, will be updated with result in MainActivityDBResultHandler
+        resetStats();
+
+        //send get marker info message to MarkerDBWorker
         Message m = new Message();
         Bundle b = new Bundle();
         m.setTarget(mDBWorker.mServiceHandler);
@@ -173,6 +168,14 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
 
     }
 
+
+    private void resetStats() {
+        TextView numPingsTV = (TextView) findViewById(R.id.NumberOfPingsTV);
+        TextView avgIntTV = (TextView) findViewById(R.id.TotalAvgLocationIntervalTV);
+        numPingsTV.setText(getText(R.string.number_of_pings_prefix)+" 0");
+        avgIntTV.setText(getText(R.string.avg_fig_int_prefix)+ " N/A");
+
+    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -235,6 +238,12 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
         // db.close();
     }
 
+/*
+    private void setupShowMarkerSeekbar() {
+        SeekBar sb = (SeekBar) findViewById(R.id.HowFarBackSkBr);
+        sb.setOnSeekBarChangeListener(this);
+        sb.setProgress(mDefaultPastLocProgress);
+    }
 
     @Override
     public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
@@ -259,7 +268,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener,
     public void onStopTrackingTouch(SeekBar arg0) {
         // TODO Auto-generated method stub
 
-    }
+    }*/
 
 
     @Override

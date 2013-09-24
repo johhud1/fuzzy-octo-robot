@@ -9,7 +9,7 @@
         android:required="true" />
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="16"
         android:targetSdkVersion="17" />
 
     <permission
@@ -51,7 +51,7 @@
             android:label="@string/label_timerange_activity" >
         </activity>
 
-        <receiver android:name="com.example.passivelocationtester.LocTrackerService$LocationServiceBootReceiver" >
+        <receiver android:name="com.example.passivelocationtester.LocationServiceBootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

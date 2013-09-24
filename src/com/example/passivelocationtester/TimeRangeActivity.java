@@ -38,7 +38,7 @@ public class TimeRangeActivity extends Activity {
         String tag = getClass().getName();
         @Override
         public void OnValuesSelected(long valueSelectionStart, long valueSelectionEnd) {
-            Log.d(tag, "onValuesSelected: valueSelectionStart: " + valueSelectionStart + " valueSelectionEnd: " + valueSelectionEnd);
+            Log.d(tag, " onValuesSelected: valueSelectionStart: " + valueSelectionStart + " valueSelectionEnd: " + valueSelectionEnd);
             Editor editor = prefs.edit();
             editor.putLong(LFnC.PREF_MARKER_START_KEY, valueSelectionStart);
             editor.putLong(LFnC.PREF_MARKER_END_KEY, valueSelectionEnd);
@@ -90,10 +90,10 @@ public class TimeRangeActivity extends Activity {
                     if(isValueX){
                         return new Date(date).toLocaleString();
                     }
+                    //TODO: this isn't good. Should find a better solution to the problem of unnecessarily high precision y-labels
                     return String.valueOf(Math.round(value));
                 }
             });
-            // set view port, start=2, size=40
             graphView.setViewPort(System.currentTimeMillis()-viewPortSize, viewPortSize);
             graphView.setScrollable(true);
             graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));

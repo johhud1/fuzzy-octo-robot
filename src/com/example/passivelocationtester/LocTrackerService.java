@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.Date;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -36,17 +37,6 @@ public class LocTrackerService extends Service implements LocationListener {
     private boolean running = false;
     private Context mContext = this;
 
-    protected class LocationServiceBootReceiver extends BroadcastReceiver{
-        String tag = getClass().getName();
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(tag, "received a boot_completed broadcast. Restarting " + LocTrackerService.class.getName());
-            Intent i = new Intent().setClass(mContext, LocTrackerService.class);
-            startService(i);
-        }
-
-    }
-
     @Override
     public void onCreate() {
 
@@ -59,11 +49,12 @@ public class LocTrackerService extends Service implements LocationListener {
         if (!running) {
             Log.d(TAG, "onStartCommand: service not running, starting it!");
             running = true;
+            postServiceRunningNotification();
             // mServiceHandler.sendMessage(msg);
             LM = (LocationManager) getSystemService(LOCATION_SERVICE);
-            makeForeground();
+            //makeForeground();
             startPassiveLocService();
-            registerReceiver(new LocationServiceBootReceiver(), new IntentFilter(Intent.ACTION_BOOT_COMPLETED));
+            //registerReceiver(new LocationServiceBootReceiver(), new IntentFilter(Intent.ACTION_BOOT_COMPLETED));
 
         } else {
             Log.d(TAG, "onStartCommand: service running, ignoring startCommand");
@@ -71,6 +62,15 @@ public class LocTrackerService extends Service implements LocationListener {
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
+    }
+
+
+    private void postServiceRunningNotification() {
+        int NOTIFICATION_ID = 4;
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification n = new Notification.Builder(this).setContentText("Passive Location Tracker Service on")
+            .setContentText("Listening for location Requests").build();
+        nm.notify(NOTIFICATION_ID, n);
     }
 
 
@@ -90,7 +90,7 @@ public class LocTrackerService extends Service implements LocationListener {
         Notification notification =
             new Notification(R.drawable.ic_launcher, "starting passive monitoring",
                              System.currentTimeMillis());
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, TabHostActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
                                     | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -102,6 +102,12 @@ public class LocTrackerService extends Service implements LocationListener {
     @Override
     public void onDestroy() {
         Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+        int NOTIFICATION_ID = 3;
+        Notification notification =
+            new Notification.Builder(this).setContentTitle("Passive Location Tracker")
+            .setContentText("passive location listener service turned off").build();
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(NOTIFICATION_ID, notification);
     }
 
 
@@ -151,4 +157,5 @@ public class LocTrackerService extends Service implements LocationListener {
                        Toast.LENGTH_LONG).show();
 
     }
+
 }

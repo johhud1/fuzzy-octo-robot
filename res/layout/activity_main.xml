@@ -28,48 +28,48 @@
             android:id="@+id/mapPulloutDetails"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="#ffffffff" ><!-- "#ff000000" black -->
+            android:background="#ffffffff"
+            android:orientation="vertical" >
+ <!-- "#ff000000" black -->
+
             <TextView
                 android:id="@+id/statsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/StatsTitle"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-            <TextView
-                android:id="@+id/NumberOfPingsTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <TextView
-                android:id="@+id/TotalAvgLocationIntervalTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/ToBeComputed"/>
-                <!-- android:textColor="#ffffffff" -->
+
             <TextView
                 android:id="@+id/LocRequestDisplayRangeTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-            <Button
-                android:id="@+id/ShowSkBarBtn"
-                android:text="@string/ShowMarkerSkBrButtonText"
+
+            <TextView
+                android:id="@+id/NumberOfPingsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onShowSkBarBtnClick"/>
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/TotalAvgLocationIntervalTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ToBeComputed"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <!-- android:textColor="#ffffffff" -->
+
             <CheckBox
                 android:id="@+id/noMarkerMergeCB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/noMarkerMergeCBText"/>
+                android:text="@string/noMarkerMergeCBText" />
+
             <Button
                 android:id="@+id/ShowAllLocationFixButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ShowAllLocationsButtonText"/>
-
+                android:text="@string/ShowAllLocationsButtonText" />
         </LinearLayout>
     </SlidingDrawer>
 
