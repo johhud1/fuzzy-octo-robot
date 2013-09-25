@@ -7,7 +7,11 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences.Editor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,8 +29,8 @@ import android.util.Log;
 import android.util.TimeFormatException;
 import android.util.TimeUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -88,8 +92,11 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
 
         mMap.setOnMarkerClickListener(this);
         if (mPrefs.getBoolean(LFnC.PREF_FIRST_TIME_MAIN_ACTIVITY_KEY, true)) {
-            mPrefs.edit().putBoolean(LFnC.PREF_FIRST_TIME_MAIN_ACTIVITY_KEY, false);
+            Editor e = mPrefs.edit();
+            e.putBoolean(LFnC.PREF_FIRST_TIME_MAIN_ACTIVITY_KEY, false);
+            e.commit();
             //this is the first time opening the application (I think)
+            Helpers.buildBasicMessageAlertDialog(this, R.string.welcome, R.string.first_time_mapview_message).show();
         } else {
             //not first time opening the application
 
@@ -142,6 +149,18 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_about:
+                AlertDialog dialog = Helpers.buildBasicMessageAlertDialog(this, R.string.menu_about, R.string.about_dialog_message);
+                dialog.show();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -208,8 +227,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
 
     private void setupShowAllLocationsButton() {
         Button ShowAllLocButton = (Button) findViewById(R.id.ShowAllLocationFixButton);
-        ShowAllLocButton.setOnClickListener(new OnClickListener() {
-
+        ShowAllLocButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMap.clear();

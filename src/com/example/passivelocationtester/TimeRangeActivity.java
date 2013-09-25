@@ -55,7 +55,13 @@ public class TimeRangeActivity extends Activity {
 
         //get application shared preferences
         prefs = (SharedPreferences) getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
-
+        if(prefs.getBoolean(LFnC.PREF_FIRST_TIME_RANGE_ACTIVITY_KEY, true)){
+            //first time user is in Time view activity
+            Editor e = prefs.edit();
+            e.putBoolean(LFnC.PREF_FIRST_TIME_RANGE_ACTIVITY_KEY, false);
+            e.commit();
+            Helpers.buildBasicMessageAlertDialog(this, R.string.welcome, R.string.first_time_timeview_message);
+        }
         // get location data
         SQLiteDatabase db = new LocationDB(this).getReadableDatabase();
         Cursor mcurs =
@@ -107,4 +113,5 @@ public class TimeRangeActivity extends Activity {
         }
         db.close();
     }
+
 }

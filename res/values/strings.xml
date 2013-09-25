@@ -16,5 +16,15 @@
     <string name="number_of_pings_prefix">Total Number of Loc Requests: </string>
     <string name="avg_fig_int_prefix">Avg. Fix interval: </string>
     <string name="loc_request_displayrange_prefix">Between: </string>
+    <string name="menu_about">About</string>
+    <string name="about_dialog_message">Author: John Hudson\nQuestions, comments, suggestions? Send emails to johhud1@gmail.com</string>
+    <string name="first_time_mapview_message">Welcome to PassiveLocationTracker. This is the map view, where location \
+        requests are marked by their geographic position. Each location request is placed on the map as its own marker, unless there
+        were several requests nearby in a small time-frame, in which case the requests are merged into one marker, and the number of merged \
+        requests is noted in the marker callout</string>
+
+    <string name="welcome">Welcome</string>
+    <string name="first_time_timeview_message">This is the time graph view. The number of requests per hour is graphed here. You can select \
+        a time range to show in the map view by clicking on graph.</string>
 
 </resources>

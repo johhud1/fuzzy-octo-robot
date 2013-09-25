@@ -110,7 +110,6 @@ public class LocTrackerService extends Service implements LocationListener {
         nm.notify(NOTIFICATION_ID, notification);
     }
 
-
     @Override
     public void onLocationChanged(Location l) {
         mDB = new LocationDB(this).getWritableDatabase();
