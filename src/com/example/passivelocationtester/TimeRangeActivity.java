@@ -1,18 +1,6 @@
 package com.example.passivelocationtester;
 
 import java.sql.Date;
-import java.util.prefs.Preferences;
-
-import com.jjoe64.graphview.BarGraphView;
-import com.jjoe64.graphview.BinBarGraphView;
-import com.jjoe64.graphview.CustomLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.GraphViewStyle;
-import com.jjoe64.graphview.LineGraphView;
-import com.jjoe64.graphview.OnValuesSelectedListener;
-import com.jjoe64.graphview.SelectableBinBarGraphView;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -21,16 +9,27 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+
+import com.jjoe64.graphview.CustomLabelFormatter;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewStyle;
+import com.jjoe64.graphview.OnValuesSelectedListener;
+import com.jjoe64.graphview.SelectableBinBarGraphView;
 
 
 
-public class TimeRangeActivity extends Activity {
+public class TimeRangeActivity extends Activity implements OnSeekBarChangeListener {
     public static final long timeBoxSize = 1 * LFnC.HOUR;
     public static final long viewPortSize = LFnC.DAY; //one day in milliseconds
+
+    SelectableBinBarGraphView graphView;
 
     SharedPreferences prefs;
 
@@ -83,7 +82,7 @@ public class TimeRangeActivity extends Activity {
             }
 
             //data = DataBinningHelper.binData(data, timeBoxSize);
-            GraphView graphView = new SelectableBinBarGraphView(this, "Location Requests", false, LFnC.HOUR,
+            graphView = new SelectableBinBarGraphView(this, "Location Requests", false, LFnC.HOUR,
                                                                 new PassiveLocationGraphOnValueSelectedListener());
             //graphView.setManualYAxisBounds(50d, 0d);
             // add data
@@ -97,7 +96,8 @@ public class TimeRangeActivity extends Activity {
                         return new Date(date).toLocaleString();
                     }
                     //TODO: this isn't good. Should find a better solution to the problem of unnecessarily high precision y-labels
-                    return String.valueOf(Math.round(value));
+                    String l =String.valueOf(value);
+                    return l.substring(0, Math.min(l.length(), 4));
                 }
             });
             graphView.setViewPort(System.currentTimeMillis()-viewPortSize, viewPortSize);
@@ -108,10 +108,67 @@ public class TimeRangeActivity extends Activity {
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.time_range);
             layout.addView(graphView);
+
+            SeekBar sk = (SeekBar) findViewById(R.id.bin_size_skbar);
+            sk.setOnSeekBarChangeListener(this);
+            setBinSizeTextView();
         } else {
             Log.d(tag, "cursor is empty");
         }
         db.close();
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        //lets give the seekbar 5 states for now. 30 min. 1hr. 3 hr. 12 hr. 24 hour.
+
+        if(progress < 20){
+            graphView.setBinSize(30 * LFnC.MINUTE);
+            //binSizeTV.setText(binSizeString + "30 min");
+        } else if( (20 <= progress) && (progress < 40)){
+            graphView.setBinSize(LFnC.HOUR);
+            //binSizeTV.setText(binSizeString + "1 hour");
+        } else if( (40 <= progress) && (progress <60)){
+            graphView.setBinSize(3 * LFnC.HOUR);
+            //binSizeTV.setText(binSizeString + "3 hours");
+        } else if( (60 <= progress) && (progress < 80)){
+            //binSizeTV.setText(binSizeString + "12 hours");
+            graphView.setBinSize(12 * LFnC.HOUR);
+        } else if( (80 <= progress)){
+            graphView.setBinSize(LFnC.DAY);
+            //binSizeTV.setText(binSizeString + "24 hour");
+        }
+        setBinSizeTextView();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
+    protected void setBinSizeTextView(){
+        long size = graphView.getBinSize();
+        if(size == -1){
+            Log.e(getClass().getName(), "set bin Size text view failure. Seems like bin Graph has num bins set, not bin size");
+            return;
+        }
+        String binSizeString = getText(R.string.binsize_prefix).toString();
+        TextView binSizeTV = (TextView) findViewById(R.id.binsize_textview);
+        if(binSizeTV == null){
+            Log.e(getClass().getName(), "error in setBinSizeTextView, binSizeTextView couldn't be found (== null)");
+        }
+        if((size/LFnC.MINUTE) < 60){
+            binSizeTV.setText(binSizeString+ size/LFnC.MINUTE+ " min");
+        } else if(size/LFnC.HOUR < 24){
+            binSizeTV.setText(binSizeString+ size/LFnC.HOUR + " hours");
+        } else{
+            binSizeTV.setText(binSizeString + size/LFnC.DAY + " days");
+        }
+    }
 }

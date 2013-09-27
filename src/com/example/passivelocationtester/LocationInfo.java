@@ -1,6 +1,5 @@
 package com.example.passivelocationtester;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -26,5 +26,5 @@
     <string name="welcome">Welcome</string>
     <string name="first_time_timeview_message">This is the time graph view. The number of requests per hour is graphed here. You can select \
         a time range to show in the map view by clicking on graph.</string>
-
+    <string name="binsize_prefix">Current bin size: </string>
 </resources>

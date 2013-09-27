@@ -2,17 +2,11 @@ package com.example.passivelocationtester;
 
 import java.lang.ref.WeakReference;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -23,6 +17,8 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 

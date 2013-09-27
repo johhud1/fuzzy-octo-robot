@@ -1,33 +1,22 @@
 package com.example.passivelocationtester;
 
 import java.sql.Date;
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.SharedPreferences.Editor;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.Log;
-import android.util.TimeFormatException;
-import android.util.TimeUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,26 +24,23 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import android.support.v4.app.FragmentManager;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CameraPositionCreator;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import android.support.v4.app.FragmentActivity;
 
 
-
-public class MainActivity extends Activity implements OnMarkerClickListener, LocationListener {
+public class MainActivity extends FragmentActivity implements OnMarkerClickListener, LocationListener {
     Context mContext = this;
     LocationDB mLocDB;
     SQLiteDatabase mDB;
@@ -82,7 +68,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
 
         startService(new Intent().setClass(this, LocTrackerService.class));
 
-        MapFragment mfrag = (MapFragment) getFragmentManager().findFragmentById(R.id.mainMapFrag);
+        SupportMapFragment mfrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mainMapFrag);
         mMap = mfrag.getMap();
         mHandler = new MainActivityDBResultHandler(mMap, markerIDToAccuracyHM, this);
         mDBWorker = new MarkerDBWorker(mHandler, this);
@@ -107,6 +93,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
     @Override
     public void onResume(){
         super.onResume();
+        mCurCircle = null;
         mMap.clear();
         long timeEnd = mPrefs.getLong(LFnC.PREF_MARKER_END_KEY, System.currentTimeMillis());
         long timeStart = mPrefs.getLong(LFnC.PREF_MARKER_START_KEY, 0);
@@ -231,6 +218,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
             @Override
             public void onClick(View v) {
                 mMap.clear();
+                mCurCircle = null;
                 drawDBElementsOnMap(mMap, new LocationDB(mContext).getReadableDatabase());
             }
         });
@@ -250,6 +238,7 @@ public class MainActivity extends Activity implements OnMarkerClickListener, Loc
         }
         // SQLiteDatabase db = mLocDB.getReadableDatabase();
         mMap.clear();
+        mCurCircle = null;
         TextView nOfPTV = (TextView) findViewById(R.id.NumberOfPingsTV);
         nOfPTV.setText("0");
         drawDBElementsOnMap(mMap, System.currentTimeMillis(), mStartShowingLocTime);
