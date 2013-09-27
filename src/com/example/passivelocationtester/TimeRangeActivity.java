@@ -121,23 +121,12 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         //lets give the seekbar 5 states for now. 30 min. 1hr. 3 hr. 12 hr. 24 hour.
-
-        if(progress < 20){
-            graphView.setBinSize(30 * LFnC.MINUTE);
-            //binSizeTV.setText(binSizeString + "30 min");
-        } else if( (20 <= progress) && (progress < 40)){
-            graphView.setBinSize(LFnC.HOUR);
-            //binSizeTV.setText(binSizeString + "1 hour");
-        } else if( (40 <= progress) && (progress <60)){
-            graphView.setBinSize(3 * LFnC.HOUR);
-            //binSizeTV.setText(binSizeString + "3 hours");
-        } else if( (60 <= progress) && (progress < 80)){
-            //binSizeTV.setText(binSizeString + "12 hours");
-            graphView.setBinSize(12 * LFnC.HOUR);
-        } else if( (80 <= progress)){
-            graphView.setBinSize(LFnC.DAY);
-            //binSizeTV.setText(binSizeString + "24 hour");
-        }
+        long[] binSizeVals = { 30 * LFnC.MINUTE, LFnC.HOUR, 3 * LFnC.HOUR,
+                               12 * LFnC.HOUR, LFnC.DAY, 7 * LFnC.DAY};
+        int max = seekBar.getMax();
+        float range = Float.valueOf(max+1) / binSizeVals.length;
+        int index = (int) Math.floor(Float.valueOf(progress) / range);
+        graphView.setBinSize(binSizeVals[index]);
         setBinSizeTextView();
     }
 
