@@ -182,10 +182,11 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
         boolean binEnabled = p.getBoolean(getString(R.string.binSize_prefKey), false);
         if(!binEnabled){
         	//hide bin size seekbar if bin disabled
-        	Log.i(tag, "manual binning disabled. removing bin size seek bar");
+        	Log.d(tag, "manual binning disabled. removing bin size seek bar");
         	findViewById(R.id.bin_size_skbar).setVisibility(View.GONE);
         } else
         	{
+        	Log.d(tag, "manual binning enabled. making bin size seek bar visible");
         	findViewById(R.id.bin_size_skbar).setVisibility(View.VISIBLE);
         }
     }
