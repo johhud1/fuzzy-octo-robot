@@ -1,4 +1,4 @@
-package com.hudson.passivelocationmonitor;
+package com.hudson.passivelocationmonitor.activities;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,13 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.hudson.passivelocationmonitor.Helpers;
+import com.hudson.passivelocationmonitor.LFnC;
+import com.hudson.passivelocationmonitor.LocationDB;
 import com.hudson.passivelocationmonitor.R;
+import com.hudson.passivelocationmonitor.R.id;
+import com.hudson.passivelocationmonitor.R.layout;
+import com.hudson.passivelocationmonitor.R.string;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;

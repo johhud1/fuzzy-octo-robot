@@ -32,7 +32,7 @@ public class LocationDB extends SQLiteOpenHelper {
                                                         + KEY_PROVIDER_TYPE + " TEXT);";
 
 
-    LocationDB(Context context) {
+    public LocationDB(Context context) {
         //myFilesDir+ "/"  +
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;

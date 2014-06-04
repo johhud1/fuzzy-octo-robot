@@ -34,7 +34,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.hudson.passivelocationmonitor.TabHostActivity"
+            android:name="com.hudson.passivelocationmonitor.activities.TabHostActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,15 +43,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hudson.passivelocationmonitor.MainActivity"
+            android:name="com.hudson.passivelocationmonitor.activities.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
         <activity
-            android:name="com.hudson.passivelocationmonitor.TimeRangeActivity"
+            android:name="com.hudson.passivelocationmonitor.activities.TimeRangeActivity"
             android:label="@string/label_timerange_activity" >
         </activity>
         <activity
-            android:name="com.hudson.passivelocationmonitor.SettingsActivity"
+            android:name="com.hudson.passivelocationmonitor.activities.SettingsActivity"
             android:label="@string/label_settings_activity" >
         </activity>
 

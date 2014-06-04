@@ -1,6 +1,13 @@
-package com.hudson.passivelocationmonitor;
+package com.hudson.passivelocationmonitor.activities;
 
+import com.hudson.passivelocationmonitor.Helpers;
 import com.hudson.passivelocationmonitor.R;
+import com.hudson.passivelocationmonitor.R.drawable;
+import com.hudson.passivelocationmonitor.R.id;
+import com.hudson.passivelocationmonitor.R.layout;
+import com.hudson.passivelocationmonitor.R.menu;
+import com.hudson.passivelocationmonitor.R.string;
+import com.hudson.passivelocationmonitor.R.xml;
 import com.hudson.passivelocationmonitor.fragments.SettingsFragment;
 
 import android.app.AlertDialog;

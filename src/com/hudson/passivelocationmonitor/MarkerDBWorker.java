@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MarkerDBWorker{
     static String TAG = "MarkerDBWorker";
-    static final int getDBMarkerInfo = 1;
+    public static final int getDBMarkerInfo = 1;
 
     public Handler mainThreadHandler;
     public Context mContext;

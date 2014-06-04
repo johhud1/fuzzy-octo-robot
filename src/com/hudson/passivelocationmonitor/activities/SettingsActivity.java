@@ -1,4 +1,4 @@
-package com.hudson.passivelocationmonitor;
+package com.hudson.passivelocationmonitor.activities;
 
 import com.hudson.passivelocationmonitor.fragments.SettingsFragment;
 

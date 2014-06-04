@@ -1,6 +1,7 @@
 package com.hudson.passivelocationmonitor;
 
 import com.hudson.passivelocationmonitor.R;
+import com.hudson.passivelocationmonitor.activities.TabHostActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -1,4 +1,4 @@
-package com.hudson.passivelocationmonitor;
+package com.hudson.passivelocationmonitor.activities;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -26,18 +26,30 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.hudson.passivelocationmonitor.Helpers;
+import com.hudson.passivelocationmonitor.LFnC;
+import com.hudson.passivelocationmonitor.LocTrackerService;
+import com.hudson.passivelocationmonitor.LocationDB;
+import com.hudson.passivelocationmonitor.MainActivityDBResultHandler;
+import com.hudson.passivelocationmonitor.MarkerDBWorker;
 import com.hudson.passivelocationmonitor.R;
+import com.hudson.passivelocationmonitor.R.id;
+import com.hudson.passivelocationmonitor.R.layout;
+import com.hudson.passivelocationmonitor.R.string;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+
 import android.support.v4.app.FragmentManager;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+
 import android.support.v4.app.FragmentActivity;
 
 public class MainActivity extends FragmentActivity implements

@@ -34,10 +34,10 @@ public class Helpers {
 			AlertDialog next = new AlertDialog.Builder(c)
 					.setTitle(titles[i])
 					.setMessage(messagePages[i])
-					.setNegativeButton("Prev", new LinkedMultiPageListener(prev))
+					.setNegativeButton("Prev", new ShowAlertDialogPageListener(prev))
 					.setNeutralButton("Close", new DismissListener()).create();
 			prev.setButton(DialogInterface.BUTTON_POSITIVE, "Next",
-					new LinkedMultiPageListener(next));
+					new ShowAlertDialogPageListener(next));
 			prev = next;
 		}
 		return ads[0];
@@ -52,10 +52,10 @@ public class Helpers {
 
 	}
 
-	private static class LinkedMultiPageListener implements OnClickListener {
+	private static class ShowAlertDialogPageListener implements OnClickListener {
 		AlertDialog d;
 
-		public LinkedMultiPageListener(AlertDialog d) {
+		public ShowAlertDialogPageListener(AlertDialog d) {
 			this.d = d;
 		}
 
