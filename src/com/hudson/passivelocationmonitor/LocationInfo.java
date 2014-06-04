@@ -1,4 +1,4 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.hudson.passivelocationmonitor.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -97,7 +98,6 @@ public class MainActivity extends FragmentActivity implements OnMarkerClickListe
         mMap.clear();
         long timeEnd = mPrefs.getLong(LFnC.PREF_MARKER_END_KEY, System.currentTimeMillis());
         long timeStart = mPrefs.getLong(LFnC.PREF_MARKER_START_KEY, 0);
-        setShowingLocationPingsBetweenText(timeStart, timeEnd);
         drawDBElementsOnMap(mMap, timeEnd, timeStart);
     }
 
@@ -132,24 +132,6 @@ public class MainActivity extends FragmentActivity implements OnMarkerClickListe
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.menu_about:
-                AlertDialog dialog = Helpers.buildBasicMessageAlertDialog(this, R.string.menu_about, R.string.about_dialog_message);
-                dialog.show();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     private void drawDBElementsOnMap(GoogleMap map, SQLiteDatabase db) {
         long timeEnd = System.currentTimeMillis();
@@ -160,7 +142,7 @@ public class MainActivity extends FragmentActivity implements OnMarkerClickListe
     private void drawDBElementsOnMap(GoogleMap map, long timeEnd, long timeStart) {
         //set stats to none, will be updated with result in MainActivityDBResultHandler
         resetStats();
-
+        setShowingLocationPingsBetweenText(timeStart, timeEnd);
         //send get marker info message to MarkerDBWorker
         Message m = new Message();
         Bundle b = new Bundle();

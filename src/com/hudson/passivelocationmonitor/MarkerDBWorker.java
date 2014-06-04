@@ -1,4 +1,4 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import java.lang.ref.WeakReference;
 import java.sql.Date;
@@ -18,6 +18,7 @@ import android.os.RemoteException;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.hudson.passivelocationmonitor.R;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 

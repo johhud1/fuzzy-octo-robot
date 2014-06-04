@@ -1,6 +1,7 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -9,12 +10,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.hudson.passivelocationmonitor.R;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
@@ -51,6 +56,7 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
         final String tag = getClass().getName() + ":onCreate";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.time_range);
+        
 
         //get application shared preferences
         prefs = (SharedPreferences) getSharedPreferences(LFnC.PREF_KEY, MODE_PRIVATE);
@@ -59,7 +65,7 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
             Editor e = prefs.edit();
             e.putBoolean(LFnC.PREF_FIRST_TIME_RANGE_ACTIVITY_KEY, false);
             e.commit();
-            Helpers.buildBasicMessageAlertDialog(this, R.string.welcome, R.string.first_time_timeview_message);
+            Helpers.buildBasicMessageAlertDialog(this, R.string.welcome, R.string.first_time_timeview_message).show();
         }
         // get location data
         SQLiteDatabase db = new LocationDB(this).getReadableDatabase();
@@ -70,6 +76,10 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
         int rows = mcurs.getCount();
         Log.d(tag, "all time requests cursor has: " + rows + " rows");
         int dateIndex = mcurs.getColumnIndex(LocationDB.KEY_DATE);
+        
+        //get layout to which we will add either graph of location data, or 'no data to graph' 
+        LinearLayout layout = (LinearLayout) findViewById(R.id.time_range);
+        
         if (mcurs.moveToFirst()) {
             long firstDate = mcurs.getLong(dateIndex);
             GraphViewData[] data = new GraphViewData[mcurs.getCount()];
@@ -92,12 +102,13 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
                 @Override
                 public String formatLabel(double value, boolean isValueX) {
                     long date = (long)value;
+
                     if(isValueX){
-                        return new Date(date).toLocaleString();
+                        return new SimpleDateFormat("kk:mm dd/MM/yy").format(new Date(date)); //new Date(date).toLocaleString();
                     }
                     //TODO: this isn't good. Should find a better solution to the problem of unnecessarily high precision y-labels
                     String l =String.valueOf(value);
-                    return l.substring(0, Math.min(l.length(), 4));
+                    return l.substring(0, Math.min(l.length(), 4)); 
                 }
             });
             graphView.setViewPort(System.currentTimeMillis()-viewPortSize, viewPortSize);
@@ -105,15 +116,15 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
             graphView.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK, Color.DKGRAY));
             // optional - activate scaling / zooming
             graphView.setScalable(true);
-
-            LinearLayout layout = (LinearLayout) findViewById(R.id.time_range);
             layout.addView(graphView);
-
             SeekBar sk = (SeekBar) findViewById(R.id.bin_size_skbar);
             sk.setOnSeekBarChangeListener(this);
             setBinSizeTextView();
         } else {
             Log.d(tag, "cursor is empty");
+            TextView emptyGraph = new TextView(this);
+            emptyGraph.setText("No Location Requests have been made yet, nothing to graph");
+            layout.addView(emptyGraph);
         }
         db.close();
     }
@@ -158,6 +169,24 @@ public class TimeRangeActivity extends Activity implements OnSeekBarChangeListen
             binSizeTV.setText(binSizeString+ size/LFnC.HOUR + " hours");
         } else{
             binSizeTV.setText(binSizeString + size/LFnC.DAY + " days");
+        }
+    }
+    
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	final String tag = getClass().getName() + ":onResume";
+    
+        //check if manual binning is enabled
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean binEnabled = p.getBoolean(getString(R.string.binSize_prefKey), false);
+        if(!binEnabled){
+        	//hide bin size seekbar if bin disabled
+        	Log.i(tag, "manual binning disabled. removing bin size seek bar");
+        	findViewById(R.id.bin_size_skbar).setVisibility(View.GONE);
+        } else
+        	{
+        	findViewById(R.id.bin_size_skbar).setVisibility(View.VISIBLE);
         }
     }
 }

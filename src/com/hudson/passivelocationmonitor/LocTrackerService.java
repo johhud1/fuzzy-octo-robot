@@ -1,4 +1,6 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
+
+import com.hudson.passivelocationmonitor.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;

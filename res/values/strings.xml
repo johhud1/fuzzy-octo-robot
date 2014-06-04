@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name="mapPulloutHandle">Details</string>
     <string name="app_name">Passive Location Monitor</string>
     <string name="title_activity_main">MapActivity</string>
     <string name="menu_settings">Settings</string>
@@ -13,18 +13,24 @@
     <string name="mapview_activity_indicator">Map View</string>
     <string name="timerange_activity_indicator">Time View</string>
     <string name="label_timerange_activity">Time View lbl</string>
+    <string name="label_settings_activity">Settings</string>
     <string name="number_of_pings_prefix">Total Number of Loc Requests: </string>
     <string name="avg_fig_int_prefix">Avg. Fix interval: </string>
     <string name="loc_request_displayrange_prefix">Between: </string>
     <string name="menu_about">About</string>
     <string name="about_dialog_message">Author: John Hudson.\nPlease send any questions, comments or suggestions to johhud1@gmail.com</string>
-    <string name="first_time_mapview_message">Welcome to PassiveLocationTracker. This is the map view, where location \
+    <string name="first_time_mapview_message">Welcome to Passive Location Monitor. This is the map view, where location \
         requests are marked by their geographic position. Each location request is placed on the map as its own marker, unless there
         were several requests nearby in a small time-frame, in which case the requests are merged into one marker, and the number of merged \
         requests is noted in the marker callout</string>
 
     <string name="welcome">Welcome</string>
-    <string name="first_time_timeview_message">This is the time graph view. The number of requests per hour is graphed here. You can select \
-        a time range to display in the map view by clicking on graph or dragging the dark squares.</string>
-    <string name="binsize_prefix">Current bin size: </string>
+    <string name="first_time_timeview_message">This is the time graph view. The number of requests per hour is graphed here. \
+        Its likely there are no requests recorded yet, so this screen will be blank. Once there are, you can select \
+        a time range to display in the map view by clicking on the graph or dragging the dark squares.</string>
+    <string name="binsize_prefix">Bin size: </string>
+    <string name="binSize_cbEnable">Enable Manual bin sizing</string>
+    <string name="binSize_cbDisable">Disable manual bin sizing</string>
+    
+    <string name="binSize_prefKey">binSizePrefKey</string>
 </resources>

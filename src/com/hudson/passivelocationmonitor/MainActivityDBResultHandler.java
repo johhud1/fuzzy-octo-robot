@@ -1,4 +1,4 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +13,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.hudson.passivelocationmonitor.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;

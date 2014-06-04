@@ -1,4 +1,4 @@
-package com.example.passivelocationtester;
+package com.hudson.passivelocationmonitor;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
