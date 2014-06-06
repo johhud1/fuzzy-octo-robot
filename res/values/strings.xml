@@ -31,6 +31,8 @@
     <string name="binsize_prefix">Bin size: </string>
     <string name="binSize_cbEnable">Enable Manual bin sizing</string>
     <string name="binSize_cbDisable">Disable manual bin sizing</string>
+    <string name="graphViewTitle">Location Requests</string>
+    <string name="notEnoughData_noGraph">Not enough Location Requests have been made yet, nothing to graph</string>
     
     <string name="binSize_prefKey">binSizePrefKey</string>
 </resources>
