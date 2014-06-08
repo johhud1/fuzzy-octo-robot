@@ -177,7 +177,7 @@ public class MainActivity extends FragmentActivity implements
 	private void resetStats() {
 		TextView numPingsTV = (TextView) findViewById(R.id.NumberOfPingsTV);
 		TextView avgIntTV = (TextView) findViewById(R.id.TotalAvgLocationIntervalTV);
-		numPingsTV.setText(getText(R.string.number_of_pings_prefix) + " 0");
+		numPingsTV.setText(getText(R.string.number_of_pings_prefix) +"" + getText(R.string.ToBeComputed));
 		avgIntTV.setText(getText(R.string.avg_fig_int_prefix) + " N/A");
 
 	}
@@ -244,34 +244,6 @@ public class MainActivity extends FragmentActivity implements
 				mStartShowingLocTime);
 		// db.close();
 	}
-
-	/*
-	 * private void setupShowMarkerSeekbar() { SeekBar sb = (SeekBar)
-	 * findViewById(R.id.HowFarBackSkBr); sb.setOnSeekBarChangeListener(this);
-	 * sb.setProgress(mDefaultPastLocProgress); }
-	 * 
-	 * @Override public void onProgressChanged(SeekBar sb, int progress, boolean
-	 * fromUser) { String tag = "onProgressChanged"; Log.d(TAG + ":" + tag,
-	 * "progress now: " + progress); long duration = DateUtils.HOUR_IN_MILLIS *
-	 * progress; Date showLocsAfter = new Date(System.currentTimeMillis() -
-	 * duration); TextView tv = (TextView)
-	 * findViewById(R.id.LocRequestDisplayRangeTV);
-	 * tv.setText("Only display location fixes after: " +
-	 * showLocsAfter.toLocaleString()); mStartShowingLocTime =
-	 * System.currentTimeMillis() - duration; }
-	 * 
-	 * 
-	 * @Override public void onStartTrackingTouch(SeekBar arg0) { // TODO
-	 * Auto-generated method stub
-	 * 
-	 * }
-	 * 
-	 * 
-	 * @Override public void onStopTrackingTouch(SeekBar arg0) { // TODO
-	 * Auto-generated method stub
-	 * 
-	 * }
-	 */
 
 	@Override
 	public void onLocationChanged(Location location) {
