@@ -110,6 +110,22 @@ public class MarkerDBWorker{
         }
         if (!mcurs.moveToFirst()) {
             Log.d(TAG + tag, "addDBElementsToMap; cursor is empty (is the DB emtpy?)");
+            String avgFixIntString = thisClass.get().mContext.getString(R.string.avg_fig_int_prefix) + " N/A";
+            String npTVString = thisClass.get().mContext.getString(R.string.number_of_pings_prefix) + " 0";
+
+            //initialize and send message containing
+            Bundle b = new Bundle();
+            b.putString(LFnC.WThrdAvgFixIntKey, avgFixIntString);
+            b.putString(LFnC.WThrdNPString, npTVString);
+            m = Message.obtain();
+            m.what = MainActivityDBResultHandler.avgFixAndNumPointsIntID;
+            m.setData(b);
+            try {
+				thisClass.get().mMessenger.send(m);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             return;
         }
 

@@ -244,12 +244,12 @@ public class TimeRangeActivity extends Activity implements
 				Log.d(tag,
 						"manual binning disabled. removing bin size seek bar");
 				findViewById(R.id.bin_size_skbar).setVisibility(View.GONE);
-				graphView.setNumBins(20);
+				if(graphView != null) graphView.setNumBins(20);
 			} else {
 				Log.d(tag,
 						"manual binning enabled. making bin size seek bar visible");
 				findViewById(R.id.bin_size_skbar).setVisibility(View.VISIBLE);
-				graphView.setBinSize(LFnC.HOUR);
+				if(graphView != null) graphView.setBinSize(LFnC.HOUR);
 			}
 			// TODO: remove old graphView from layout, construct and add new one
 			// with proper binning

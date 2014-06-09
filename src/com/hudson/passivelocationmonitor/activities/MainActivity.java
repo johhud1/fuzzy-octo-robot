@@ -177,8 +177,8 @@ public class MainActivity extends FragmentActivity implements
 	private void resetStats() {
 		TextView numPingsTV = (TextView) findViewById(R.id.NumberOfPingsTV);
 		TextView avgIntTV = (TextView) findViewById(R.id.TotalAvgLocationIntervalTV);
-		numPingsTV.setText(getText(R.string.number_of_pings_prefix) +"" + getText(R.string.ToBeComputed));
-		avgIntTV.setText(getText(R.string.avg_fig_int_prefix) + " N/A");
+		numPingsTV.setText(getText(R.string.number_of_pings_prefix) +" Calculating");
+		avgIntTV.setText(getText(R.string.avg_fig_int_prefix) + " Calculating");
 
 	}
 
