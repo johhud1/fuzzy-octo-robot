@@ -3,6 +3,7 @@ package com.hudson.passivelocationmonitor.activities;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,12 +15,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.google.android.gms.drive.internal.e;
+import com.google.android.gms.internal.em;
 import com.hudson.passivelocationmonitor.Helpers;
 import com.hudson.passivelocationmonitor.LFnC;
 import com.hudson.passivelocationmonitor.LocationDB;
@@ -124,6 +129,8 @@ public class TimeRangeActivity extends Activity implements
 			TextView emptyGraph = new TextView(this);
 			emptyGraph
 					.setText(getString(R.string.notEnoughData_noGraph));
+			emptyGraph.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+			emptyGraph.setGravity(Gravity.CENTER);
 			layout.addView(emptyGraph);
 		}
 		db.close();

@@ -27,7 +27,8 @@
     <string name="welcome">Welcome</string>
     <string name="first_time_timeview_message">This is the time graph view. The number of requests per hour is graphed here. \
         Its likely there are no requests recorded yet, so this screen will be blank. Once there are, you can select \
-        a time range to display in the map view by clicking on the graph or dragging the dark squares.</string>
+        a time range to display in the map view by press on the graph or pressing and holding, then dragging the threshold to \
+        the desired position.</string>
     <string name="binsize_prefix">Bin size: </string>
     <string name="binSize_cbEnable">Enable Manual bin sizing</string>
     <string name="binSize_cbDisable">Disable manual bin sizing</string>
