@@ -16,6 +16,7 @@ public class LocationInfo implements Parcelable {
     float lng;          //index 5
     long duration;
     int markersMerged;
+    long date;
 
     private LocationInfo(Parcel in) {
         in.setDataPosition(0);
@@ -78,24 +79,25 @@ public class LocationInfo implements Parcelable {
         duration = d;
     }
 
-    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc){
-        constructor(lat, lng, p, snip, t, acc, (long)0, 0);
+    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long date){
+        constructor(lat, lng, p, snip, t, acc, date, (long)0, 0);
     }
-    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long d){
-        constructor(lat, lng, p, snip, t, acc, d, 0);
+    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long date, long dur){
+        constructor(lat, lng, p, snip, t, acc, date, dur, 0);
     }
-    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long d, int mm){
-        constructor(lat, lng, p, snip, t, acc, d, mm);
+    public LocationInfo(float lat, float lng, String p, String snip, String t, float acc, long date, long dur, int mm){
+        constructor(lat, lng, p, snip, t, acc, date, dur, mm);
     }
 
-    private void constructor(float lat, float lng, String p, String snip, String t, float acc, long d, int markersMerged){
+    private void constructor(float lat, float lng, String p, String snip, String t, float acc,long date, long dur, int markersMerged){
         this.lat = lat;
         this.lng = lng;
         provider = p;
         snippet = snip;
         title = t;
         accuracy = acc;
-        duration = d;
+        this.date = date;
+        duration = dur;
         this.markersMerged = markersMerged;
     }
 

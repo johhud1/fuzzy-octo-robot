@@ -143,6 +143,7 @@ public class MarkerDBWorker{
         int accInd = mcurs.getColumnIndex(LocationDB.KEY_ACCURACY);
         int markerCount = 0;
         LocationInfo firstLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd);
+        long firstLocDate = mcurs.getLong(tsInd);
         try {
             while (!mcurs.isAfterLast()) {
                 LocationInfo candidateLoc = NewLocInfoFromDB(mcurs, latInd, longInd, tsInd, provInd, accInd);
@@ -203,6 +204,8 @@ public class MarkerDBWorker{
             Bundle b = new Bundle();
             b.putString(LFnC.WThrdAvgFixIntKey, avgFixIntString);
             b.putString(LFnC.WThrdNPString, npTVString);
+            b.putLong(LFnC.teKey, prevFixTime);
+            b.putLong(LFnC.tsKey, firstLocDate);
             m = Message.obtain();
             m.what = MainActivityDBResultHandler.avgFixAndNumPointsIntID;
             m.setData(b);
@@ -231,7 +234,7 @@ public class MarkerDBWorker{
         return new LocationInfo(Lat, Long,
                          provider,
                          snippet, title,
-                         accuracy);
+                         accuracy, date);
     }
 
 

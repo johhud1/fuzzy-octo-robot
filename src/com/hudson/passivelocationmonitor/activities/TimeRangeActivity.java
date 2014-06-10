@@ -35,6 +35,7 @@ import com.hudson.passivelocationmonitor.R.string;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.CustomLabelValueGenerator;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.OnValuesSelectedListener;
@@ -189,6 +190,7 @@ public class TimeRangeActivity extends Activity implements
 				return l.substring(0, Math.min(l.length(), 4));
 			}
 		});
+		//gv.setCustomLabelValGenerator(this);
 		gv.setViewPort(System.currentTimeMillis() - viewPortSize, viewPortSize);
 		gv.setScrollable(true);
 		gv.setGraphViewStyle(new GraphViewStyle(Color.BLACK, Color.BLACK,
@@ -239,6 +241,7 @@ public class TimeRangeActivity extends Activity implements
 			String key) {
 		String tag = getClass().getName() + " :onSharedPreferenceChanged";
 		changeLayoutForBinSizePref(key);
+		graphView.redrawAll();
 	}
 
 	private void changeLayoutForBinSizePref(String key) {
@@ -262,6 +265,6 @@ public class TimeRangeActivity extends Activity implements
 			// with proper binning
 
 		}
-
 	}
+
 }

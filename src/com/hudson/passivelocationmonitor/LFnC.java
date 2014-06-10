@@ -17,6 +17,8 @@ public class LFnC {
     public static final String WTGetDBMarkerTSKey = "getMarkerTSKey";
     public static final String WTGetDBMarkerTEKey = "getMarkerTEKey";
     public static final String WTNoMarkerMergingKey = "noMarkerMergingKey";
+    public static final String tsKey = "startTimeStamp";
+    public static final String teKey = "endTimeStamp";
 
     //keys for accessing sharedPreference values
     public static final String PREF_KEY = "prefs";

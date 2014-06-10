@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.webkit.WebView.FindListener;
 import android.widget.TextView;
 
 import com.hudson.passivelocationmonitor.R;
@@ -86,6 +87,12 @@ public class MainActivityDBResultHandler extends Handler {
                 npTv.setText(npTVString);
             } else {
                 Log.e(TAG + tag, "npString case. npTVString is null!");
+            }
+            TextView rangeTv = (TextView) mActivity.findViewById(R.id.LocRequestDisplayRangeTV);
+            if(rangeTv != null){
+            	String range = new Date(b.getLong(LFnC.tsKey)).toLocaleString() + " - "
+        				+ new Date(b.getLong(LFnC.teKey)).toLocaleString();
+            	rangeTv.setText(mActivity.getString(R.string.loc_request_displayrange_prefix) + range);
             }
             break;
         }

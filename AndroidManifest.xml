@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hudson.passivelocationmonitor"
     android:versionCode="2"
-    android:versionName="1.01" >
+    android:versionName="1.02" >
 
     <uses-feature
         android:glEsVersion="0x00020000"

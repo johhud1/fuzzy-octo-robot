@@ -115,13 +115,12 @@ public class MainActivity extends FragmentActivity implements
 		long timeStart = mPrefs.getLong(LFnC.PREF_MARKER_START_KEY, 0);
 		drawDBElementsOnMap(mMap, timeEnd, timeStart);
 	}
-
+/*
 	private void setShowingLocationPingsBetweenText(long timeStart, long timeEnd) {
 		String tag = getClass().getName()
 				+ ":setShowingLocationPingsBetweenText";
 		TextView tv = (TextView) findViewById(R.id.LocRequestDisplayRangeTV);
-		String msg = new Date(timeStart).toLocaleString() + " - "
-				+ new Date(timeEnd).toLocaleString();
+		
 		if (tv != null) {
 			Log.d(tag, "setting location request range TextView to :" + msg);
 			tv.setText(getString(R.string.loc_request_displayrange_prefix)
@@ -132,7 +131,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
-
+*/
 	private void setupNoMarkerMergeButton() {
 		CheckBox b = (CheckBox) findViewById(R.id.noMarkerMergeCB);
 		b.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -160,7 +159,8 @@ public class MainActivity extends FragmentActivity implements
 		// set stats to none, will be updated with result in
 		// MainActivityDBResultHandler
 		resetStats();
-		setShowingLocationPingsBetweenText(timeStart, timeEnd);
+		TextView tv = (TextView) findViewById(R.id.LocRequestDisplayRangeTV);
+		tv.setText(getString(R.string.loc_request_displayrange_prefix) + getString(R.string.calculating));
 		// send get marker info message to MarkerDBWorker
 		Message m = new Message();
 		Bundle b = new Bundle();
@@ -177,8 +177,8 @@ public class MainActivity extends FragmentActivity implements
 	private void resetStats() {
 		TextView numPingsTV = (TextView) findViewById(R.id.NumberOfPingsTV);
 		TextView avgIntTV = (TextView) findViewById(R.id.TotalAvgLocationIntervalTV);
-		numPingsTV.setText(getText(R.string.number_of_pings_prefix) +" Calculating");
-		avgIntTV.setText(getText(R.string.avg_fig_int_prefix) + " Calculating");
+		numPingsTV.setText(getText(R.string.number_of_pings_prefix) +getString(R.string.calculating));
+		avgIntTV.setText(getText(R.string.avg_fig_int_prefix) + getString(R.string.calculating));
 
 	}
 
